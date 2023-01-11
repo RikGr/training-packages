@@ -1,30 +1,19 @@
-name: Node.js Package
-
+name: Publish to Docker
 on:
-  release:
-    types: [created]
-
+  push:
+    branches:
+      - main
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      # Add your test steps here if needed...
+      - name: Build container
+        uses: docker/build-push-action@v1
         with:
-          node-version: 12
-      - run: npm ci
-      - run: npm test
-
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://npm.pkg.github.com/
-      - run: npm ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          username: YOURNAME
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: RikGr/training-packages
+          tag_with_sha: true
